@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slack-Drive Integration | Portfolio Project</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #008080;
+            --secondary: #20B2AA;
+            --accent: #5F9EA0;
+            --light-teal: #E0F2F1;
+            --dark-teal: #004D40;
+            --google-blue: #4285F4;
+            --google-red: #EA4335;
+            --google-yellow: #FBBC05;
+            --google-green: #34A853;
+            --light: #f8f9fa;
+            --dark: #212529;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+            border-radius: 0 0 30px 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 60%);
+            animation: rotate 20s linear infinite;
+            z-index: 1;
+        }
+        
+        header .container {
+            position: relative;
+            z-index: 2;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        header p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .tech-stack {
+            display: flex;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+        
+        .tech-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            margin: 0 0.5rem;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        
+        .tech-badge i {
+            margin-right: 0.5rem;
+        }
+        
+        .project-overview {
+            margin: 3rem 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+        
+        .overview-text {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .overview-text h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        .overview-text p {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        
+        .overview-image {
+            flex: 1;
+            min-width: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .overview-image img {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .features {
+            margin: 3rem 0;
+        }
+        
+        .features h2 {
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            color: var(--primary);
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .feature-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            border-bottom: 4px solid transparent;
+            overflow: hidden;
+        }
+        
+        .feature-card::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 15px 35px rgba(0, 128, 128, 0.2);
+        }
+        
+        .feature-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .feature-card i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        .feature-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        .workflow {
+            margin: 3rem 0;
+        }
+        
+        .workflow h2 {
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            color: var(--primary);
+        }
+        
+        .workflow-steps {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .step {
+            display: flex;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        
+        .step:not(:last-child)::before {
+            content: "";
+            position: absolute;
+            left: 1.5rem;
+            top: 3.5rem;
+            bottom: -2rem;
+            width: 4px;
+            background: linear-gradient(to bottom, var(--primary), var(--secondary));
+        }
+        
+        .step-number {
+            flex: 0 0 3rem;
+            height: 3rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-right: 1.5rem;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 5px 15px rgba(0, 128, 128, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .step-number::after {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 70%);
+            top: -50%;
+            left: -50%;
+            transition: all 0.5s ease;
+        }
+        
+        .step:hover .step-number::after {
+            top: -20%;
+            left: -20%;
+        }
+        
+        .step-content {
+            flex: 1;
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            border-left: 0px solid var(--primary);
+        }
+        
+        .step:hover .step-content {
+            transform: translateX(10px);
+            border-left: 5px solid var(--primary);
+            box-shadow: 0 8px 25px rgba(0, 128, 128, 0.15);
+        }
+        
+        .step-content h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+        
+        .tech-used {
+            margin: 3rem 0;
+        }
+        
+        .tech-used h2 {
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            color: var(--primary);
+        }
+        
+        .tech-logos {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 2.5rem;
+        }
+        
+        .tech-logo {
+            width: 150px;
+            height: 150px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 1.5rem;
+            background-color: white;
+            border-radius: 50%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .tech-logo::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            padding: 4px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: -1;
+        }
+        
+        .tech-logo:hover {
+            transform: scale(1.1) translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 128, 128, 0.25);
+        }
+        
+        .tech-logo:hover::before {
+            opacity: 1;
+        }
+        
+        .tech-logo i {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .tech-logo:hover i {
+            transform: scale(1.2);
+        }
+        
+        .tech-logo span {
+            font-weight: 600;
+            color: var(--dark-teal);
+        }
+        
+        .slack-color {
+            color: #4A154B;
+            background: linear-gradient(135deg, #4A154B, #36C5F0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .google-color {
+            background: linear-gradient(135deg, #4285F4, #34A853, #FBBC05, #EA4335);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .script-color {
+            background: linear-gradient(135deg, #1E8E3E, #34A853);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .key-color {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .conclusion {
+            margin: 3rem 0;
+            text-align: center;
+            padding: 3rem;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+        
+        .conclusion h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        .conclusion p {
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto 1.5rem;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            color: var(--dark);
+            font-size: 0.9rem;
+        }
+        
+        .flow-diagram {
+            max-width: 100%;
+            height: auto;
+            margin: 2rem auto;
+            display: block;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        
+        /* Media Queries */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+            
+            .tech-stack {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+            
+            .tech-badge {
+                margin: 0.25rem;
+            }
+            
+            .step:not(:last-child)::before {
+                left: 1rem;
+            }
+            
+            .step-number {
+                flex: 0 0 2rem;
+                height: 2rem;
+                font-size: 1rem;
+                margin-right: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Slack-Drive PDF Automation</h1>
+            <p>Seamlessly integrate Slack and Google Drive for automatic PDF file management</p>
+            <div class="tech-stack">
+                <span class="tech-badge"><i class="fab fa-slack"></i> Slack API</span>
+                <span class="tech-badge"><i class="fab fa-google-drive"></i> Google Drive</span>
+                <span class="tech-badge"><i class="fas fa-code"></i> Google Apps Script</span>
+                <span class="tech-badge"><i class="fas fa-plug"></i> API Integration</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <section class="project-overview animate">
+            <div class="overview-text">
+                <h2>Project Overview</h2>
+                <p>
+                    This project automates the file management workflow between Slack and Google Drive,
+                    eliminating the need for manual downloads and uploads. When a PDF is shared in a
+                    designated Slack channel, the system automatically checks if it already exists in
+                    Google Drive. If not, it downloads and saves the file, then confirms the action with
+                    a message back to the channel.
+                </p>
+                <p>
+                    This integration leverages Slack's API platform, OAuth permissions, event subscriptions,
+                    and Google Apps Script to create a seamless workflow that saves time and reduces errors
+                    in document management.
+                </p>
+            </div>
+            <div class="overview-image">
+                <svg viewBox="0 0 550 360" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Background -->
+                    <rect x="0" y="0" width="550" height="360" rx="15" fill="#f8f9fa" />
+                    
+                    <!-- Slack Icon -->
+                    <g transform="translate(100, 100) scale(0.5)">
+                        <rect x="-35" y="-35" width="70" height="70" rx="15" fill="#E01E5A" />
+                        <rect x="45" y="-35" width="70" height="70" rx="15" fill="#36C5F0" />
+                        <rect x="-35" y="45" width="70" height="70" rx="15" fill="#ECB22E" />
+                        <rect x="45" y="45" width="70" height="70" rx="15" fill="#2EB67D" />
+                    </g>
+                    
+                    <!-- Google Drive Icon -->
+                    <g transform="translate(450, 100) scale(0.5)">
+                        <path d="M-35,-60 L35,-60 L70,0 L0,120 L-70,0 Z" fill="#4285F4" />
+                        <path d="M70,0 L35,-60 L130,-60 L165,0 Z" fill="#FBBC05" />
+                        <path d="M165,0 L130,-60 L225,-60 L260,0 Z" fill="#EA4335" />
+                        <path d="M0,120 L70,0 L165,0 L95,120 Z" fill="#34A853" />
+                        <path d="M95,120 L165,0 L260,0 L190,120 Z" fill="#188038" />
+                    </g>
+                    
+                    <!-- Connection Arrow -->
+                    <path d="M200,100 C275,50 275,150 350,100" stroke="#008080" stroke-width="5" fill="none" stroke-dasharray="10,5" />
+                    <polygon points="350,100 335,90 335,110" fill="#008080" />
+                    
+                    <!-- PDF Document -->
+                    <g transform="translate(275, 225)">
+                        <rect x="-40" y="-50" width="80" height="100" rx="5" fill="#ffffff" stroke="#cccccc" stroke-width="2" />
+                        <rect x="-40" y="-50" width="80" height="20" rx="5" fill="#FF5252" />
+                        <text x="0" y="-35" font-family="Arial" font-size="12" fill="white" text-anchor="middle">PDF</text>
+                        <line x1="-25" y1="-15" x2="25" y2="-15" stroke="#eaeaea" stroke-width="2" />
+                        <line x1="-25" y1="-5" x2="15" y2="-5" stroke="#eaeaea" stroke-width="2" />
+                        <line x1="-25" y1="5" x2="25" y2="5" stroke="#eaeaea" stroke-width="2" />
+                        <line x1="-25" y1="15" x2="20" y2="15" stroke="#eaeaea" stroke-width="2" />
+                        <line x1="-25" y1="25" x2="25" y2="25" stroke="#eaeaea" stroke-width="2" />
+                    </g>
+                    
+                    <!-- Animation Circles -->
+                    <circle cx="175" cy="100" r="5" fill="#008080" opacity="0.7">
+                        <animate attributeName="opacity" values="0.7;0.2;0.7" dur="2s" repeatCount="indefinite" />
+                    </circle>
+                    <circle cx="225" cy="85" r="5" fill="#008080" opacity="0.7">
+                        <animate attributeName="opacity" values="0.7;0.2;0.7" dur="2s" begin="0.5s" repeatCount="indefinite" />
+                    </circle>
+                    <circle cx="275" cy="70" r="5" fill="#008080" opacity="0.7">
+                        <animate attributeName="opacity" values="0.7;0.2;0.7" dur="2s" begin="1s" repeatCount="indefinite" />
+                    </circle>
+                    <circle cx="325" cy="85" r="5" fill="#008080" opacity="0.7">
+                        <animate attributeName="opacity" values="0.7;0.2;0.7" dur="2s" begin="1.5s" repeatCount="indefinite" />
+                    </circle>
+                    
+                    <!-- Text Labels -->
+                    <text x="100" y="170" font-family="Arial" font-size="14" fill="#008080" font-weight="bold" text-anchor="middle">Slack</text>
+                    <text x="450" y="170" font-family="Arial" font-size="14" fill="#008080" font-weight="bold" text-anchor="middle">Google Drive</text>
+                    <text x="275" y="300" font-family="Arial" font-size="14" fill="#008080" font-weight="bold" text-anchor="middle">Automated PDF Transfer</text>
+                </svg>
+            </div>
+        </section>
+
+        <section class="features animate">
+            <h2>Key Features</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fas fa-robot"></i>
+                    <h3>Automated File Management</h3>
+                    <p>Automatically detect and process PDF files shared in Slack channels without any manual intervention.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-check-double"></i>
+                    <h3>Duplicate Prevention</h3>
+                    <p>Smart checking system that verifies if files already exist in Google Drive before saving them again.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-comments"></i>
+                    <h3>Real-time Notifications</h3>
+                    <p>Sends confirmation messages back to the Slack channel when files are processed successfully.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-lock"></i>
+                    <h3>Secure Authentication</h3>
+                    <p>Implements OAuth 2.0 for secure authentication between Slack and Google services.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="workflow animate">
+            <h2>How It Works</h2>
+            <svg viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg" class="flow-diagram">
+                <!-- Background Pattern -->
+                <defs>
+                    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                        <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#e0f2f1" stroke-width="1"/>
+                    </pattern>
+                </defs>
+                <rect width="800" height="800" fill="url(#grid)" opacity="0.5" />
+                
+                <!-- Flow Chart Boxes -->
+                <!-- Box 1 -->
+                <g transform="translate(400, 60)">
+                    <rect x="-150" y="-30" width="300" height="60" rx="5" fill="white" stroke="#008080" stroke-width="2" />
+                    <text x="0" y="5" font-family="Arial" font-size="14" fill="#008080" text-anchor="middle" font-weight="bold">Create Slack App at api.slack.com/apps</text>
+                </g>
+                
+                <!-- Arrow 1 -->
+                <g transform="translate(400, 90)">
+                    <line x1="0" y1="0" x2="0" y2="40" stroke="#008080" stroke-width="2" />
+                    <polygon points="0,40 -5,30 5,30" fill="#008080" />
+                </g>
+                
+                <!-- Box 2 -->
+                <g transform="translate(400, 160)">
+                    <rect x="-150" y="-30" width="300" height="60" rx="5" fill="white" stroke="#008080" stroke-width="2" />
+                    <text x="0" y="-5" font-family="Arial" font-size="14" fill="#008080" text-anchor="middle" font-weight="bold">Install App to Workspace and</text>
+                    <text x="0" y="15" font-family="Arial" font-size="14" fill="#008080" text-anchor="middle" font-weight="bold">Get SLACK_TOKEN</text>
+                </g>
+                
+                <!-- Arrow 2 -->
+                <g transform="translate(400, 190)">
+                    <line x1="0" y1="0" x2="0" y2="40" stroke="#008080" stroke-width="2" />
+                    <polygon points="0,40 -5,30 5,30" fill="#008080" />
+                </g>
+                
+                <!-- Box 3 -->
+                <g transform="translate(400, 260)">
+                    <rect x="-150" y="-30" width="300" height="60" rx="5" fill="white" stroke="#008080" stroke-width="2" />
+                    <text x="0" y="-5" font-family="Arial" font-size="14" fill="#008080" text-anchor="middle" font-weight="bold">Setup OAuth & Permission with</text>
+                    <text x="0" y="15" font-family="Arial" font-size="14" fill="#008080" text-anchor="middle" font-weight="bold">Redirect URL from App Script</text>
+                </g>
+                
+                <!-- Arrow 3 -->
+                <g transform="translate(400, 290)">
+                    <line x1="0" y1="0" x2="0" y2="40" stroke="#008080" stroke-width="2" />
+                    <polygon points="0,40 -5,30 5,30" fill="#008080" />
+                </g>
+                
+                <!-- Box 4 -->
+                <g transform="translate(400, 360)">
+                    <rect x="-150" y="-30" width="300" height="60" rx="5" fill="white" stroke="#008080" stroke-width="2" />
+                    <text x="0" y="-5" font-family="Arial" font-size="14" fill="#008080" text-anchor="middle" font-weight="bold">Assign Scopes: bot,</text>
+                    <text x="0" y="15" font-family="Arial" font-size="14" fill="#008080" text-anchor="middle" font-weight="bold">channel:history, etc.</text>
+                </g>
+                
+                <!-- Arrow 4 -->
+                <g transform="translate(400, 390)">
+                    <line x1="0" y1="0" x2="0" y2="40" stroke="#008080" stroke-width="2" />
+                    <polygon points="0,40 -5,30 5,30" fill="#008080" />
+                </g>
+                
+                <!-- Box 5 -->
+                <g transform="translate(400, 460)">
+                    <rect x="-150" y="-30" width="300" height="60" rx="5" fill="white" stroke="#008080" stroke-width="2" />
+                    <text x="0" y="-5" font-family="Arial" font-size="14" fill="#008080" text-anchor="middle" font-weight="bold">Setup Event Subscriptions and</text>
+                    <text x="0" y="15" font-family="Arial" font-size="14" fill="#008080" text-anchor="middle" font-weight="bold">Request URL</text>
+                </g>
+                
+                <!-- Arrow 5 -->
+                <g transform="translate(400, 490)">
+                    <line x1="0" y1="0" x2="0" y2="40" stroke="#008080" stroke-width="2" />
+                    <polygon points="0,40 -5,30 5,30" fill="#008080" />
+                </g>
+                
+                <!-- Box 6 -->
+                <g transform="translate(400, 560)">
+                    <rect x="-150" y="-30" width="300" height="60" rx="5" fill="white" stroke="#008080" stroke-width="2" />
+                    <text x="0" y="5" font-family="Arial" font-size="14" fill="#008080" text-anchor="middle" font-weight="bold">Subscribe to file_shared Event</text>
+                </g>
+                
+                <!-- Arrow 6 -->
+                <g transform="translate(400, 590)">
+                    <line x1="0" y1="0" x2="0" y2="40" stroke="#008080" stroke-width="2" />
+                    <polygon points="0,40 -5,30 5,30" fill="#008080" />
+                </g>
+                
+                <!-- Decision Diamond -->
+                <g transform="translate(400, 680)">
+                    <polygon points="0,-50 100,0 0,50 -100,0" fill="white" stroke="#008080" stroke-width="2" />
+                    <text x="0" y="-10" font-family="Arial" font-size="14" fill="#008080" text-anchor="middle" font-weight="bold">Is PDF already</text>
+                    <text x="0" y="10" font-family="Arial" font-size="14" fill="#008080" text-anchor="middle" font-weight="bold">in Drive?</text>
+                </g>
+                
+                <!-- Yes Arrow -->
+                <g transform="translate(300, 680)">
+                    <line x1="0" y1="0" x2="-50" y2="0" stroke="#008080" stroke-width="2" />
+                    <line x1="-50" y1="0" x2="-50" y2="60" stroke="#008080" stroke-width="2" />
+                    <polygon points="-50,60 -55,50 -45,50" fill="#008080" />
+                    <text x="-25" y="-10" font-family="Arial" font-size="14" fill="#008080" text-anchor="middle">Yes</text>
+                </g>
+                
+                <!-- No Arrow -->
+                <g transform="translate(500, 680)">
+                    <line x1="0" y1="0" x2="50" y2="0" stroke="#008080" stroke-width="2" />
+                    <line x1="50" y1="0" x2="50" y2="60" stroke="#008080" stroke-width="2" />
+                    <polygon points="50,60 45,50 55,50" fill="#008080" />
+                    <text x="25" y="-10" font-family="Arial" font-size="14" fill="#008080" text-anchor="middle">No</text>
+                </g>
+                
+                <!-- Yes Result Box -->
+                <g transform="translate(250, 760)">
+                    <rect x="-125" y="-20" width="250" height="40" rx="5" fill="white" stroke="#008080" stroke-width="2" />
+                    <text x="0" y="5" font-family="Arial" font-size="14" fill="#008080" text-anchor="middle">Send Slack Message: File Already Exists</text>
+                </g>
+                
+                <!-- No Result Box -->
+                <g transform="translate(550, 760)">
+                    <rect x="-125" y="-20" width="250" height="40" rx="5" fill="white" stroke="#008080" stroke-width="2" />
+                    <text x="0" y="5" font-family="Arial" font-size="14" fill="#008080" text-anchor="middle">Download and Save PDF to Google Drive</text>
+                </g>
+                
+                <!-- Final Arrow -->
+                <g transform="translate(550, 780)">
+                    <line x1="0" y1="0" x2="0" y2="30" stroke="#008080" stroke-width="2" />
+                    <polygon points="0,30 -5,20 5,20" fill="#008080" />
+                </g>
+                
+                <!-- Final Box -->
+                <g transform="translate(550, 830)">
+                    <rect x="-125" y="-20" width="250" height="40" rx="5" fill="white" stroke="#008080" stroke-width="2" />
+                    <text x="0" y="5" font-family="Arial" font-size="14" fill="#008080" text-anchor="middle">Send Slack Message: File Saved Successfully</text>
+                </g>
+                
+                <!-- Animation Elements -->
+                <circle cx="400" cy="90" r="5" fill="#20B2AA">
+                    <animate attributeName="opacity" values="1;0.2;1" dur="2s" repeatCount="indefinite" />
+                </circle>
+                <circle cx="400" cy="190" r="5" fill="#20B2AA">
+                    <animate attributeName="opacity" values="1;0.2;1" dur="2s" begin="0.4s" repeatCount="indefinite" />
+                </circle>
+                <circle cx="400" cy="290" r="5" fill="#20B2AA">
+                    <animate attributeName="opacity" values="1;0.2;1" dur="2s" begin="0.8s" repeatCount="indefinite" />
+                </circle>
+                <circle cx="400" cy="390" r="5" fill="#20B2AA">
+                    <animate attributeName="opacity" values="1;0.2;1" dur="2s" begin="1.2s" repeatCount="indefinite" />
+                </circle>
+                <circle cx="400" cy="490" r="5" fill="#20B2AA">
+                    <animate attributeName="opacity" values="1;0.2;1" dur="2s" begin="1.6s" repeatCount="indefinite" />
+                </circle>
+                <circle cx="400" cy="590" r="5" fill="#20B2AA">
+                    <animate attributeName="opacity" values="1;0.2;1" dur="2s" begin="2s" repeatCount="indefinite" />
+                </circle>
+            </svg>
+            <div class="workflow-steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Setup & Authentication</h3>
+                        <p>Created a Slack App at api.slack.com/apps and installed it to the workspace to obtain the SLACK_TOKEN.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Permission Configuration</h3>
+                        <p>Set up OAuth permissions with necessary scopes (bot, channel:history, files:read) and configured the redirect URL from the App Script.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Event Subscription</h3>
+                        <p>Configured the app to listen for file_shared events in specific Slack channels.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3>File Processing</h3>
+                        <p>When a file is shared, the app checks if it's a PDF and then verifies if it already exists in Google Drive.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">5</div>
+                    <div class="step-content">
+                        <h3>Save & Notify</h3>
+                        <p>If the file doesn't exist yet, it's downloaded and saved to Google Drive. The app then sends a confirmation message back to the Slack channel.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="tech-used animate">
+            <h2>Technologies Used</h2>
+            <div class="tech-logos">
+                <div class="tech-logo">
+                    <i class="fab fa-slack slack-color"></i>
+                    <span>Slack API</span>
+                </div>
+                <div class="tech-logo">
+                    <i class="fab fa-google google-color"></i>
+                    <span>Google Drive API</span>
+                </div>
+                <div class="tech-logo">
+                    <i class="fas fa-code script-color"></i>
+                    <span>Google Apps Script</span>
+                </div>
+                <div class="tech-logo">
+                    <i class="fas fa-key"></i>
+                    <span>OAuth 2.0</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="conclusion animate">
+            <h2>Project Outcome</h2>
+            <p>
+                This Slack-Drive integration has successfully automated the file management workflow, saving time and 
+                ensuring consistent document handling. The project demonstrates proficiency in API integration, OAuth 
+                authentication flows, and event-driven programming while solving a real-world file management challenge.
+            </p>
+            <p>
+                Working across Slack, Google Apps Script, and Drive provided valuable insights into cross-platform 
+                integrations and practical automation solutions for everyday business processes.
+            </p>
+
+        </section>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy;© 2025 Abhishek Singh Handa. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Simple animation for sections
+        document.addEventListener('DOMContentLoaded', function() {
+            const animatedElements = document.querySelectorAll('.animate');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = 1;
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            animatedElements.forEach(element => {
+                element.style.opacity = 0;
+                element.style.transform = 'translateY(20px)';
+                element.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+                observer.observe(element);
+            });
+        });
+    </script>
+</body>
+</html>
